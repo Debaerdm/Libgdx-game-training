@@ -1,5 +1,6 @@
 package com.pointGame.World;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.pointGame.character.Player;
@@ -23,6 +24,7 @@ public class World {
         this.player = player;
         this.floor = floor;
         this.obstacleList = new ArrayList<Obstacle>();
+        this.player.setFloor(floor);
     }
 
     public Floor getFloor() {
@@ -35,14 +37,6 @@ public class World {
 
     public Player getPlayer() {
         return player;
-    }
-
-    public void addToPlayer(float x, float y){
-        this.player.getVector2().add(x,y);
-        this.outScreen();
-        this.player.setRectangle(new Rectangle(player.getVector2().x,player.getVector2().y, Constante.PLAYER_RADIUS,Constante.PLAYER_RADIUS));
-        this.player.collisionObstacle(x,y);
-        this.floor.collisionFloor(this.getPlayer(), x , y);
     }
 
     public void generateObstacle(){
@@ -68,5 +62,14 @@ public class World {
         if(this.player.getVector2().x > Constante.SCREEN_WIDTH - Constante.PLAYER_RADIUS) this.player.getVector2().x = Constante.SCREEN_WIDTH - Constante.PLAYER_RADIUS;
         if(this.player.getVector2().y < 0) this.player.getVector2().y = 0;
         if(this.player.getVector2().y > Constante.SCREEN_HEIGHT - Constante.PLAYER_RADIUS) this.player.getVector2().y = Constante.SCREEN_HEIGHT - Constante.PLAYER_RADIUS;
+    }
+
+    public void updateMotionPlayer(){
+        this.outScreen();
+        this.player.updateMotion();
+    }
+
+    public void updateGraphicsPlayer(ShapeRenderer shapeRenderer){
+        this.player.update(shapeRenderer);
     }
 }

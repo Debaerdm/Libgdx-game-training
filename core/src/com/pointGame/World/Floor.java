@@ -64,12 +64,4 @@ public class Floor {
         }
     }
 
-    public void collisionFloor(Player player, float x, float y){
-        for (Obstacle obstacle: obstacles) {
-            if(player.getRectangle().overlaps(obstacle.getRectangle())) {
-                player.getVector2().add(-x,-y);
-                player.setRectangle(new Rectangle(player.getVector2().x,player.getVector2().y, Constante.PLAYER_RADIUS,Constante.PLAYER_RADIUS));
-            }
-        }
-    }
 }

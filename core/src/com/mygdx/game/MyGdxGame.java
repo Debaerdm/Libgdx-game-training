@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.pointGame.World.Floor;
@@ -10,7 +11,7 @@ import com.pointGame.World.World;
 import com.pointGame.config.Constante;
 import com.pointGame.character.Player;
 
-public class MyGdxGame extends ApplicationAdapter {
+public class MyGdxGame extends ApplicationAdapter implements InputProcessor {
 
 	private OrthographicCamera camera;
 	private ShapeRenderer shapeRenderer;
@@ -22,7 +23,7 @@ public class MyGdxGame extends ApplicationAdapter {
 		this.camera = new OrthographicCamera();
 		this.camera.setToOrtho(false, Constante.SCREEN_WIDTH, Constante.SCREEN_HEIGHT);
 
-		this.player = new Player(Constante.PLAYER_LIFE_DEFAULT, Constante.PLAYER_FORCE_DEFAULT, 50, 50);
+		this.player = new Player(Constante.PLAYER_LIFE_DEFAULT, Constante.PLAYER_FORCE_DEFAULT, (int)Constante.PLAYER_RADIUS, (int)(Constante.OBSTACLE_HEIGHT));
 
 		Floor floor = new Floor(50);
 		floor.generateFloor();
@@ -32,6 +33,8 @@ public class MyGdxGame extends ApplicationAdapter {
 
 		this.world = new World(player, floor);
 		this.world.generateObstacle();
+
+		Gdx.input.setInputProcessor(this);
 	}
 
 	@Override
@@ -41,35 +44,78 @@ public class MyGdxGame extends ApplicationAdapter {
 		camera.update();
 		shapeRenderer.setProjectionMatrix(camera.combined);
 
-		this.player.update(shapeRenderer);
-
-		this.intPutMove();
+		this.world.updateMotionPlayer();
+		this.world.updateGraphicsPlayer(shapeRenderer);
 		this.world.getFloor().update(shapeRenderer);
 		this.world.updateObstacle(shapeRenderer);
-
-		this.world.getPlayer().fall();
-	}
-
-	public void intPutMove(){
-		if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-			this.world.addToPlayer(1,0);
-		}
-
-		if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
-			this.world.addToPlayer(-1,0);
-		}
-
-		if (Gdx.input.isKeyPressed(Input.Keys.Z)) {
-			this.world.addToPlayer(0,1);
-		}
-
-		if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-			this.world.addToPlayer(0,-1);
-		}
 	}
 	
 	@Override
 	public void dispose () {
 		shapeRenderer.dispose();
+	}
+
+	@Override
+	public boolean keyDown(int keycode) {
+		switch (keycode) {
+			case Input.Keys.Q:
+				this.world.getPlayer().setLeftMove(true);
+				break;
+			case Input.Keys.D:
+				this.world.getPlayer().setRightMove(true);
+				break;
+			case Input.Keys.SPACE:
+				this.world.getPlayer().setJumpMove(true);
+				break;
+		}
+		return true;
+	}
+
+	@Override
+	public boolean keyUp(int keycode) {
+		switch (keycode) {
+			case Input.Keys.Q:
+				this.world.getPlayer().setLeftMove(false);
+				break;
+			case Input.Keys.D:
+				this.world.getPlayer().setRightMove(false);
+				break;
+			case Input.Keys.SPACE:
+				this.world.getPlayer().setJumpMove(false);
+				break;
+		}
+		return true;
+	}
+
+	@Override
+	public boolean keyTyped(char character) {
+
+		return false;
+	}
+
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		return false;
+	}
+
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		return false;
+	}
+
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+
+		return false;
+	}
+
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		return false;
+	}
+
+	@Override
+	public boolean scrolled(int amount) {
+		return false;
 	}
 }
