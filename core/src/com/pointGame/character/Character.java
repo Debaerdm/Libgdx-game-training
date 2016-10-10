@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.Observable;
 
-public abstract class Character extends Observable {
+public abstract class Character{
 
     protected int vie;
     protected int force;
@@ -34,7 +34,6 @@ public abstract class Character extends Observable {
 
     public void setVie(int vie) {
         this.vie = vie;
-        notifyObservers();
     }
 
     public int getForce() {
@@ -43,7 +42,6 @@ public abstract class Character extends Observable {
 
     public void setForce(int force) {
         this.force = force;
-        notifyObservers();
     }
 
     public Vector2 getVector2() {
@@ -52,7 +50,6 @@ public abstract class Character extends Observable {
 
     public void setVector2(Vector2 vector2) {
         this.vector2 = vector2;
-        notifyObservers();
     }
 
     @Override

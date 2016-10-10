@@ -37,4 +37,8 @@ public class Obstacle {
         shapeRenderer.rect(this.rectangle.getX(), this.rectangle.getY(), this.rectangle.getWidth(),this.rectangle.getHeight());
         shapeRenderer.end();
     }
+
+    public void setObstacleColor(Color obstacleColor) {
+        ObstacleColor = obstacleColor;
+    }
 }

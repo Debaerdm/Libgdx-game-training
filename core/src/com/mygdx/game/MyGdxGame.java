@@ -5,40 +5,35 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.pointGame.World.Floor;
+import com.pointGame.World.World;
 import com.pointGame.config.Constante;
 import com.pointGame.character.Player;
-import com.pointGame.gameObject.Obstacle;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 public class MyGdxGame extends ApplicationAdapter {
 
 	private OrthographicCamera camera;
 	private ShapeRenderer shapeRenderer;
+	private World world;
 	private Player player;
-	private List<Obstacle> obstacleList;
-	
+
 	@Override
 	public void create () {
-		obstacleList = new ArrayList<Obstacle>();
-		camera = new OrthographicCamera(Constante.SCREEN_WITDH, Constante.SCREEN_HEIGHT);
+		this.camera = new OrthographicCamera();
+		this.camera.setToOrtho(false, Constante.SCREEN_WIDTH, Constante.SCREEN_HEIGHT);
 
-		player = new Player(Constante.PLAYER_LIFE_DEFAULT, Constante.PLAYER_FORCE_DEFAULT, 50, 50);
-		shapeRenderer = new ShapeRenderer();
-		this.generateObstacle();
+		this.player = new Player(Constante.PLAYER_LIFE_DEFAULT, Constante.PLAYER_FORCE_DEFAULT, 50, 50);
+
+		Floor floor = new Floor(50);
+		floor.generateFloor();
+		floor.setAllObstacleColor(Color.GREEN);
+
+		this.shapeRenderer = new ShapeRenderer();
+
+		this.world = new World(player, floor);
+		this.world.generateObstacle();
 	}
 
-	public void generateObstacle(){
-		Random random = new Random();
-		for(int i = 0; i < (random.nextInt(10)+5); i++){
-			Obstacle obstacle = new Obstacle(((float)(random.nextInt(Constante.SCREEN_WITDH - (int)Constante.OBSTACLE_WIDHT)) + Constante.OBSTACLE_WIDHT),
-					((float)(random.nextInt(Constante.SCREEN_HEIGHT - (int)Constante.OBSTACLE_HEIGHT)) + Constante.OBSTACLE_HEIGHT),
-					Constante.OBSTACLE_WIDHT, Constante.OBSTACLE_HEIGHT);
-			this.obstacleList.add(obstacle);
-		}
-	}
 	@Override
 	public void render () {
 		Gdx.gl.glClearColor(0.3f, 0.3f, 0.3f, 1);
@@ -49,39 +44,28 @@ public class MyGdxGame extends ApplicationAdapter {
 		this.player.update(shapeRenderer);
 
 		this.intPutMove();
-		this.outScreen();
+		this.world.getFloor().update(shapeRenderer);
+		this.world.updateObstacle(shapeRenderer);
 
-		for (Obstacle obstacle: obstacleList) {
-			obstacle.update(shapeRenderer);
-			if (this.player.isCollide(obstacle)){
-
-			}
-		}
+		this.world.getPlayer().fall();
 	}
 
 	public void intPutMove(){
 		if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-			player.add(1,0);
+			this.world.addToPlayer(1,0);
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
-			player.add(-1,0);
+			this.world.addToPlayer(-1,0);
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.Z)) {
-			player.add(0,1);
+			this.world.addToPlayer(0,1);
 		}
 
 		if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-			player.add(0,-1);
+			this.world.addToPlayer(0,-1);
 		}
-	}
-
-	public void outScreen(){
-		if(player.getVector2().x < 0) player.getVector2().x = 0;
-		if(player.getVector2().x > Constante.SCREEN_WITDH - Constante.PLAYER_RADIUS) player.getVector2().x = Constante.SCREEN_WITDH - Constante.PLAYER_RADIUS;
-		if(player.getVector2().y < 0) player.getVector2().y = 0;
-		if(player.getVector2().y > Constante.SCREEN_HEIGHT - Constante.PLAYER_RADIUS) player.getVector2().y = Constante.SCREEN_HEIGHT - Constante.PLAYER_RADIUS;
 	}
 	
 	@Override
