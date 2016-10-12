@@ -2,9 +2,7 @@ package com.pointGame.config;
 
 import com.badlogic.gdx.graphics.Color;
 
-/**
- * Created by mathieu on 02/10/16.
- */
+
 public class Constante {
 
     public static final Color PLAYER_COLOR = Color.RED;
