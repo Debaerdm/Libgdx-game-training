@@ -48,7 +48,7 @@ public class WorldRenderer {
 
     public void render(){
         this.spriteBatch.begin();
-        //this.drawBlocks();
+        this.drawBlocks();
         this.drawPlayer();
         this.spriteBatch.end();
         if (debug)

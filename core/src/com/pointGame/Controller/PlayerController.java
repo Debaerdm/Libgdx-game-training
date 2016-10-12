@@ -2,6 +2,7 @@ package com.pointGame.Controller;
 
 import com.badlogic.gdx.math.Vector2;
 import com.pointGame.config.Enums;
+import com.pointGame.model.Block;
 import com.pointGame.model.Player;
 import com.pointGame.model.World;
 
@@ -115,6 +116,20 @@ public class PlayerController {
             this.player.setPosition(this.player.getPosition());
             if (!this.player.getState().equals(Enums.State.JUMPING)) {
                 this.player.setState(Enums.State.IDLE);
+            }
+        }
+
+        for (Block block: world.getBlocks()) {
+            if (this.player.getPosition().x < block.getPosition().x + Block.getSIZE() &&
+                    this.player.getPosition().x + Player.getSIZE() > block.getPosition().x &&
+                    this.player.getPosition().y < block.getPosition().y + Block.getSIZE() &&
+                    this.player.getPosition().y + Player.getSIZE() > block.getPosition().y){
+                /*this.player.getPosition().x = -this.player.getVelocity().x;
+                this.player.getPosition().y = this.player.getVelocity().y;
+                this.player.setPosition(this.player.getPosition());*/
+                if (!this.player.getState().equals(Enums.State.JUMPING)) {
+                    this.player.setState(Enums.State.IDLE);
+                }
             }
         }
     }
